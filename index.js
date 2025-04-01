@@ -1,9 +1,7 @@
 import express, { json } from 'express';
 import { CreateUserRouter } from './routers/UserRouter.js';
-import bodyParser from 'body-parser';
+//import bodyParser from 'body-parser';
 //import { User } from './models/index.js'; // Ahora puedes usar directamente la clase
-
-
 
 const app = express();
 //app.use('x-powered-by');
@@ -11,7 +9,7 @@ app.use(express.json());
 
 // Crear una instancia de los Modelos
 //const usersModels = new User(); // Funciona correctamente
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 app.use('/api/v1/users', CreateUserRouter({ }));
 
 app.use((req, res, next) => {

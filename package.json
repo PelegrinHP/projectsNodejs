@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
+    "start-psql": "node --watch server-postgreSQL.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,8 +18,11 @@
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mysql2": "^3.14.0",
+    "pg": "^8.15.6",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.7"
   },
   "devDependencies": {

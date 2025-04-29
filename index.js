@@ -1,24 +1,22 @@
-import express, { json } from 'express';
+// index.js
+import express from 'express';
 import { CreateUserRouter } from './routers/UserRouter.js';
-//import bodyParser from 'body-parser';
-//import { User } from './models/index.js'; // Ahora puedes usar directamente la clase
+import { CreateAuthRouter } from './routers/AuthRouter.js';
+import db from './models/index.js'; 
 
 const app = express();
-//app.use('x-powered-by');
-app.use(express.json()); 
+app.use(express.json());
 
-// Crear una instancia de los Modelos
-//const usersModels = new User(); // Funciona correctamente
-//app.use(bodyParser.json());
-app.use('/api/v1/users', CreateUserRouter({ }));
+
+app.use('/api/v1/users', CreateUserRouter({ dbModels: db }));
+app.use('/api/v1/auth', CreateAuthRouter({ dbModels : db }));
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
-const PORT = process.env.PORT ?? 3000;
 
+const PORT = process.env.PORT ?? 3000;
 app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
-
 });

@@ -1,41 +1,118 @@
-//import db from '../models/index.js';
+// services/UserServices.js
 import bcrypt from "bcryptjs";
 
 /**
- * Servicios para operaciones de usuarios
+ * Service class for user-related business logic.
  */
-
 export class UserServices {
-  static async createUser({ req }) {
-    return {
-      code: 200,
-      message: "Probando Ruta psts crear Usuario",
-    };
-  }
-  static async getAllUsers({ req }) {
-    return {
-      code: 200,
-      message: "probando ruta para obtener todos los usuarios",
-    };
+
+  /**
+   * Creates a new user in the database.
+   * 
+   * @param {Object} options
+   * @param {Object} options.req - Express request object containing user data in body
+   * @param {Object} options.dbModels - Injected Sequelize database models
+   * @returns {Promise<{code: number, message: string}>} - Result of the operation
+   */
+  static async createUser({ req, dbModels }) {
+    const { firstName, lastName, email, password, password_second, cellphone } = req.body;
+
+    if (password !== password_second) {
+      return { code: 400, message: 'Passwords do not match' };
+    }
+
+    const existingUser = await dbModels.User.findOne({ where: { email } });
+    if (existingUser) {
+      return { code: 400, message: 'User already exists' };
+    }
+
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    const newUser = await dbModels.User.create({
+      firstName,
+      lastName,
+      email,
+      password: encryptedPassword,
+      cellphone,
+      isActive: true
+    });
+    return { code: 200, message: 'User created successfully with ID: ' + newUser.id };
   }
 
-  static async getById({ id }) {
-    return {
-      code: 200,
-      message: "probando ruta para obtener usuario por id",
-    };
+  /**
+   * Retrieves all active users from the database.
+   * 
+   * @param {Object} options
+   * @param {Object} options.dbModels - Injected Sequelize database models
+   * @returns {Promise<{code: number, message: Object[]}>} - List of active users
+   */
+  static async getAllUsers({ dbModels }) {
+    const users = await dbModels.User.findAll({
+      where: { isActive: true }
+    });
+    return {code: 200, message: users };
   }
 
-  static async updateUser({ id }) {
+  static async getUserById({id ,dbModels}){
     return {
-      code: 200,
-      message: "probando ruta para actualizar un usuario",
-    };
+      code : 200,
+      message : await dbModels.User.findOne({
+        where:  {
+          id: id,
+          isActive: true
+        }
+      })
+    }
   }
-  static async deleteUser({ id }) {
+
+  static async deleteUser({id ,dbModels}){
+    const user = await dbModels.User.findOne({
+      where: {
+        id: id,
+        isActive : true
+      }
+    });
+
+    await dbModels.User.update({
+      isActive : false
+    }, {
+      where: {
+        id : id
+      }
+    });
+
+    return {
+      code : 200,
+      message : "User deleted succesfully"
+    }
+  }
+
+  static async updateUser({req, dbModels}){
+
+    const user = await dbModels.User.findOne({
+      where: {
+        id : req.params.id,
+        isActive: true
+      }
+    });
+
+    const payload = {};
+
+    payload.firstName = req.body.firstName ?? user.firstName;
+    payload.lastName =  req.body.lastName ?? user.lastName;
+    payload.password = req.body.password ? await bcrypt.hash(req.body.password,10): user.password;
+    payload.cellphone = req.body.cellphone ?? user.cellphone;
+
+    await dbModels.User.update(payload,
+      {
+        where: {
+          id: req.params.id
+        }
+      }
+    );
+
     return {
       code: 200,
-      message: "probando ruta para eliminar un usuario",
-    };
+      message: "User updated successfully"
+    }
   }
 }

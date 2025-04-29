@@ -1,7 +1,7 @@
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
+export default {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Roles', {
       id: {
@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      status: {
+      isActive: {
         type: Sequelize.BOOLEAN,
         allowNull: false
       },

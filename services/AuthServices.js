@@ -1,5 +1,6 @@
 // services/AuthServices.js
 import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken';
 
 /**
  * AuthServices provides authentication-related operations such as login and logout.
@@ -22,10 +23,11 @@ export class AuthServices {
         const response = await dbModels.User.findOne({
             where: {
                 email: email
-            }
+            },
+            include: dbModels.Role
         });
 
-        if (!response || !bcrypt.compareSync(password, response.password)) {
+        if (!response || !bcrypt.compare(password, response.password)) {
             return {
                 code: 401,
                 message: "Unauthorized"
@@ -51,21 +53,24 @@ export class AuthServices {
             }
         }
 
-        const expiration = (new Date()).setHours((new Date().getHours() + 1));
-
-        const token = Buffer.from(JSON.stringify({
+        const payload = {
             firstName : response.firstName,
             lastName : response.lastName,
             id: response.id,
             email : response.email,
-            roles : ['user'],
-            expiration : expiration
-        })).toString('base64');
+            roles: [response.Role?.name || 'guest'],
+        }
+
+        const token = jwt.sign(
+            payload,
+            process.env.JWT_SECRET_KEY,
+            { expiresIn: '1h' }
+        );
 
         const session = {
-            userId : response.id,
-            token : token,
-            expiration : expiration
+            userId: response.id,
+            token,
+            expiration: new Date(Date.now() + 3600000) 
         }
 
         await dbModels.Session.create(session);

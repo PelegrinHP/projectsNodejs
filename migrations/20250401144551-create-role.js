@@ -5,28 +5,22 @@ export default {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Roles', {
       id: {
-        allowNull: false,
+        type: Sequelize.INTEGER,
         primaryKey: true,
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
+        autoIncrement: true
       },
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      }
+      ,
       type: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      isActive: {
+      status: {
         type: Sequelize.BOOLEAN,
         allowNull: false
-      },
-      userId: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        references: {
-          model: 'Users', // Nombre de la tabla referenciada
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
       },
       createdAt: {
         allowNull: false,
@@ -38,16 +32,15 @@ export default {
       }
     });
 
-    // ✅ Agregar índice único después de crear la tabla
-    await queryInterface.addIndex('Roles', ['userId', 'type'], {
+    await queryInterface.addIndex('Roles', ['name'], {
       unique: true,
-      name: 'unique_user_role'
+      name: 'unique_role_name'
     });
   },
 
   async down(queryInterface, Sequelize) {
     // Primero eliminar el índice antes de eliminar la tabla
-    await queryInterface.removeIndex('Roles', 'unique_user_role');
+    await queryInterface.removeIndex('Roles', 'unique_role_name');
     await queryInterface.dropTable('Roles');
   }
 };

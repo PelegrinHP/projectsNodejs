@@ -8,6 +8,8 @@ import { UserServices } from "../services/UserServices.js";
 export class UserController {
 
   /**
+   * Initialized the UserController with the provided database models.
+   * 
    * @param {Object} dbModels - Injected Sequelize database models.
    */
   constructor({ dbModels }) {
@@ -20,6 +22,7 @@ export class UserController {
    * @route POST /api/v1/users/create
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
+   * @returns {Promise<void>}
    */
   createUser = async (req, res) => {
     try {
@@ -27,7 +30,7 @@ export class UserController {
       res.status(response.code).json(response.message);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Error creating user" });
+      res.status(500).json({ message: "An error occurred while creating the user." });
     }
   };
 
@@ -37,6 +40,7 @@ export class UserController {
    * @route GET /api/v1/users/
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
+   * @returns {Promise<void>}
    */
   getAllUsers = async (req, res) => {
     try {
@@ -44,15 +48,20 @@ export class UserController {
       res.status(response.code).json(response.message);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Error getting users" });
+      res.status(500).json({ message: "An error occurred while retrieving users." });
     }
   };
 
   /**
-   * Docuemntar en ingles
+   * Retrieves a user by their unique ID.
+   * 
+   * @route GET /api/v1/users/:id
+   * @param {Object} req - Express request object.
+   * @param {Object} res - Express response object.
+   * @returns {Promise<void>}
    */
 
-  getUserById= async (req,res) =>{
+  getUserById= async (req, res) => {
     try {
       const response = await UserServices.getUserById({
         id: req.params.id,
@@ -61,14 +70,19 @@ export class UserController {
       res.status(response.code).json(response.message);
     } catch (err) {
       console.log(err);
-      res.status(500).json({ message: "Error getting user"});      
+      res.status(500).json({ message: "An error occurred while retrieving the user."});      
     }
   }
 
   /**
-   * Documentra en ingles
+   * Deletes a user by their unique ID
+   * 
+   * @route DELETE /api/v1/users/:id
+   * @param {Object} req - Express request object.
+   * @param {Object} res - Express response object.
+   * @returns {Promise<void>}
    */
-  deleteUser = async(req,res) => {
+  deleteUser = async(req, res) => {
     try {
       const response = await UserServices.deleteUser({
         id: req.params.id,
@@ -78,15 +92,20 @@ export class UserController {
     } catch (err) {
       console.log(err);
       res.status(500).json({
-        message : "Error"
+        message : "An error occurred while deleting the user."
       });
     }
   }
 
   /**
-   * Documentar en ingles
+   * Updates an existing user.
+   * 
+   * @route PUT /api/v1/users/:id
+   * @param {Object} req - Express request object.
+   * @param {Object} res - Express response object.
+   * @returns {Promise<void>}
    */
-  updateUser = async(req,res) => {
+  updateUser = async(req, res) => {
     try {
       const response = await UserServices.updateUser({
         req,
@@ -96,8 +115,9 @@ export class UserController {
     } catch (err) {
       console.log(err);
       res.status(500).json({
-        message : "Error"
+        message : "An error occurred while updating the user."
       })
     }
   }
+  
 }

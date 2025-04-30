@@ -52,6 +52,14 @@ export class UserServices {
     return {code: 200, message: users };
   }
 
+  /**
+   * Retrieves a single active user by their unique UUID.
+   * 
+   * @param {Object} options
+   * @param {string} options.id - The UUID of the user to retrieve.
+   * @param {Object} options.dbModels - Injected Sequelize database models.
+   * @returns {Promise<{code: number, message: Object|null}>} - The found user or null if not found.
+   */
   static async getUserById({id ,dbModels}){
     return {
       code : 200,
@@ -64,6 +72,14 @@ export class UserServices {
     }
   }
 
+  /**
+   * Performs a soft delete on a user by setting their 'isActive' flag to false.
+   * 
+   * @param {Object} options
+   * @param {string} options.id - The UUID of the user to delete.
+   * @param {Object} options.dbModels - Injected Sequelize database models.
+   * @returns {Promise<{code: number, message: string}>} - Result of the deletion.
+   */
   static async deleteUser({id ,dbModels}){
     const user = await dbModels.User.findOne({
       where: {
@@ -86,6 +102,15 @@ export class UserServices {
     }
   }
 
+  /**
+   * Updates an existing active user's information based on the request body.
+   * Fields not provided in the body will retain their current values.
+   * 
+   * @param {Object} options
+   * @param {Object} options.req - Express request object containing user data in body and UUID in params.
+   * @param {Object} options.dbModels - Injected Sequelize database models.
+   * @returns {Promise<{code: number, message: string}>} - Result of the update operation.
+   */
   static async updateUser({req, dbModels}){
 
     const user = await dbModels.User.findOne({

@@ -1,54 +1,68 @@
 'use strict';
-import { DataTypes } from 'sequelize';
-
+/** @type {import('sequelize-cli').Migration} */
 export default {
-  up: async (queryInterface, Sequelize) => {
+  async up(queryInterface, Sequelize){
     await queryInterface.createTable('Users', {
       id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
         primaryKey: true,
       },
       firstName: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       lastName: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       email: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         unique: true, // Esto asegura que no haya usuarios con el mismo email
       },
       password: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       avatar: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       cellphone: {
-        type: DataTypes.BIGINT,
+        type: Sequelize.BIGINT,
       },
       isActive: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
       },
+      roleId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Roles',
+          key: 'id',
+        },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
+      }      
+      ,
       createdAt: {
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
         allowNull: false,
       },
       updatedAt: {
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
         allowNull: false,
       },
     });
+
+    
+
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize){
     await queryInterface.dropTable('Users');
-  },
-};
+  }
+}
+
+

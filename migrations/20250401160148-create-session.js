@@ -10,10 +10,17 @@ export default {
         type: Sequelize.INTEGER
       },
       userId: {
-        type: Sequelize.UUID
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
       },
       token: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       expiration: {
         type: Sequelize.DATE

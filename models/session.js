@@ -13,12 +13,11 @@ export default (sequelize) => {
   }
   Session.init({
     userId: DataTypes.UUID,
-    token: DataTypes.STRING,
+    token: DataTypes.TEXT,
     expiration: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Session',
   });
   return Session;
-  // TODO: modificar migrations
 };

@@ -12,23 +12,13 @@ export const CreateUserRouter = ({ dbModels }) => {
   const userRouter = Router();
   const userController = new UserController({ dbModels });
 
-  /**
-   * @route POST /api/v1/users/create
-   * @desc Create a new user
-   */
+
   userRouter.post("/create", userController.createUser);
-
-  /**
-   * @route GET /api/v1/users/
-   * @desc Get all users
-   */
   userRouter.get("/", userController.getAllUsers);
-
-  // Future routes:
-  userRouter.get("/:id", userController.getUserById);         // Get user by ID
-  userRouter.put("/:id", userController.updateUser);          // Update user by ID
-  userRouter.delete("/:id", userController.deleteUser);       // Delete user by ID
-  // userRouter.get('/search', userController.findUser);         // Search users
+  userRouter.get("/:id", userController.getUserById);         
+  userRouter.put("/:id", userController.updateUser);
+  userRouter.delete("/:id", userController.deleteUser);
+  // userRouter.get('/search', userController.findUser);
 
   return userRouter;
 };

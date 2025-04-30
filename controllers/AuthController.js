@@ -20,10 +20,14 @@ export class AuthController{
 
     /**
      * Handles user login.
-     * Validates credentials and returns a session token if successful.
-     *
-     * @param {import('express').Request} req - Express request object.
-     * @param {import('express').Response} res - Express response object.
+     * Validates user credentials and returns a session token if successful.
+     * 
+     * @async
+     * @function login
+     * @param {import('express').Request} req - Express request object containing user credentials.
+     * @param {import('express').Response} res - Express response object to send back the response.
+     * 
+     * @returns {void} Sends a response with a session token or an error message.
      */
     login = async (req, res) => {
         try {
@@ -37,19 +41,23 @@ export class AuthController{
         } catch (err) {
             console.log(err);
             res.status(500).json({
-                message: "Error authentication"
+                message: "Authentication error"
             })
         }
     }
 
     /**
      * Handles user logout.
-     * Invalidates the user's session token.
-     *
-     * @param {import('express').Request} req - Express request object.
-     * @param {import('express').Response} res - Express response object.
+     * Invalidates the user's session token and logs them out.
+     * 
+     * @async
+     * @function logout
+     * @param {import('express').Request} req - Express request object containing the user's session token.
+     * @param {import('express').Response} res - Express response object to send back the response.
+     * 
+     * @returns {void} Sends a response indicating success or failure of the logout process.
      */
-    logout = async (req,res) =>{
+    logout = async (req, res) => {
         try {
             const response = await AuthServices.logout({
                 token: req.headers.token,
@@ -66,12 +74,16 @@ export class AuthController{
 
     /**
      * Handles user registration.
-     * Creates a new user in the database.
-     *
-     * @param {import('express').Request} req - Express request object.
-     * @param {import('express').Response} res - Express response object.
+     * Creates a new user record in the database.
+     * 
+     * @async
+     * @function register
+     * @param {import('express').Request} req - Express request object containing user registration details.
+     * @param {import('express').Response} res - Express response object to send back the response.
+     * 
+     * @returns {void} Sends a response with user creation success or error message.
      */
-    register = async (req,res) =>{
+    register = async (req, res) => {
         try {
             const response = await UserServices.createUser({ req, dbModels: this.dbModels });
             res.status(response.code).json(response.message);

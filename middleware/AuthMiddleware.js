@@ -1,4 +1,5 @@
 // middleware/AuthMiddleware.js
+import jwt from 'jsonwebtoken';
 import db from '../models/index.js'; 
 
 /**
@@ -25,23 +26,37 @@ export const validateUserAndPassword = (req, res, next) => {
  * @param {import('express').NextFunction} next - Express next middleware function.
  */
 export const validateToken = async (req, res, next) => {
-    if (!req.headers.token) {
+    const token = req.headers['authorization'] || req.headers['token'];
+    
+    if (!token) {
         return res.status(401).json({ message: 'No Token' });
     }
-    const session = await db.Session.findOne({
-        where: {
-            token: req.headers.token
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid Token' });
         }
+
+        const session = await db.Session.findOne({
+            where: {
+                userId: decoded.id,
+                token: token,
+            }
+        });
+
+        if (!session) {
+            return res.status(401).json({
+                message: 'Session not found or token does not match',
+            });
+        }
+
+        if (new Date(session.expiration) < new Date()) {
+            return res.status(401).json({
+                message: 'Expired Token',
+            });
+        }
+
+        req.user = decoded;
+        next();
     });
-    if (!session) {
-        return res.status(401).json({
-            message: 'Wrong Token'
-        });
-    }
-    if (new Date(session.expiration) < new Date()) {
-        return res.status(401).json({
-            message: 'Expired Token'
-        });
-    }
-    next();
 };

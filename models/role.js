@@ -10,28 +10,14 @@ export default (sequelize) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.User, { foreignKey: 'userId'});
+      this.hasMany(models.User, { foreignKey: 'roleId' });
+
     }
   }
   Role.init({
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      allowNull: false,
-      primaryKey: true
-    },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    status: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false
-    },
-    userId: {
-      type: DataTypes.UUID,
-      allowNull: false
-    }
+    name: DataTypes.STRING,
+    type: DataTypes.STRING,
+    status:DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'Role',

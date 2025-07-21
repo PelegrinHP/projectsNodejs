@@ -16,7 +16,7 @@ export default (sequelize) => {
   }
   Role.init({
     name: DataTypes.STRING,
-    type: DataTypes.STRING,
+    codename: DataTypes.STRING,
     status:DataTypes.BOOLEAN,
   }, {
     sequelize,

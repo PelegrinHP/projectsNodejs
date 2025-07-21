@@ -22,7 +22,8 @@ export class AuthServices {
 
         const response = await dbModels.User.findOne({
             where: {
-                email: email
+                email: email,
+                isActive: true
             },
             include: dbModels.Role
         });

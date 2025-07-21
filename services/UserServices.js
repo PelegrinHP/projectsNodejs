@@ -23,7 +23,10 @@ export class UserServices {
 
     const existingUser = await dbModels.User.findOne({ where: { email } });
     if (existingUser) {
-      return { code: 400, message: 'User already exists' };
+      return { 
+        code: 400,
+        message: 'User already exists'
+      };
     }
 
     const encryptedPassword = await bcrypt.hash(password, 10);
@@ -35,7 +38,11 @@ export class UserServices {
       cellphone,
       isActive: true
     });
-    return { code: 200, message: 'User created successfully with ID: ' + newUser.id };
+
+    return { 
+      code: 200,
+      message: 'User created successfully with ID: ' + newUser.id
+    };
   }
 
   /**

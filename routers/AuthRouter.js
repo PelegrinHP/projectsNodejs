@@ -2,6 +2,7 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/AuthController.js";
 import * as AuthMiddleware from "../middleware/AuthMiddleware.js";
+import { validateEmailFormat } from "../middleware/UserMiddleware.js";
 
 /**
  * Defines authentication routes for the application, including login, register, and logout.
@@ -16,7 +17,10 @@ export const CreateAuthRouter = ({ dbModels }) => {
     const authController = new AuthController({ dbModels })
 
     authRouter.post("/login", AuthMiddleware.validateUserAndPassword ,authController.login);
-    authRouter.post("/register", authController.register);
+    authRouter.post("/register",[
+        AuthMiddleware.validateUserAndPassword,
+        validateEmailFormat
+    ], authController.register);
     authRouter.post("/logout",AuthMiddleware.validateToken, authController.logout);
 
     return authRouter; 

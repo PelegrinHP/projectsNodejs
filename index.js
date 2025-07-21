@@ -1,18 +1,20 @@
 // index.js
 import express from 'express';
-import { CreateUserRouter } from './routers/UserRouter.js';
-import { CreateAuthRouter } from './routers/AuthRouter.js';
 import db from './models/index.js'; 
 import dotenv from 'dotenv';
+import cors from 'cors';
+import { CreateUserRouter } from './routers/UserRouter.js';
+import { CreateAuthRouter } from './routers/AuthRouter.js';
+import { CreateRoleRouter } from './routers/RolesRouter.js';
 dotenv.config();
-
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 
 app.use('/api/v1/users', CreateUserRouter({ dbModels: db }));
 app.use('/api/v1/auth', CreateAuthRouter({ dbModels : db }));
-// app.use('/api/v1/roles', CreateRoleRouter({ dbModels : db }));
+app.use('/api/v1/roles', CreateRoleRouter({ dbModels : db }));
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);

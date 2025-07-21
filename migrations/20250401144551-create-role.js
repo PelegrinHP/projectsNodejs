@@ -14,9 +14,10 @@ export default {
         allowNull: false,
       }
       ,
-      type: {
+      codename: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       status: {
         type: Sequelize.BOOLEAN,
